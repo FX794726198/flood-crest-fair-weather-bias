@@ -1,0 +1,9 @@
+The data files in data/ and fig/ of this repository are licensed under the
+Creative Commons Attribution 4.0 International licence (CC BY 4.0),
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Copyright (c) 2026 Xiao Feng, Juan Du, Bo Chai, Luigi Lombardo
+
+Exceptions: the Natural Earth files data/ne_50m_*.geojson are in the public
+domain, and records derived from USGS, NOAA and NASA products remain subject
+to the terms of their providers.

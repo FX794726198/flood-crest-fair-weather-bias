@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.DS_Store
+data/terra.npy
+data/aqua.npy
+data/days.npy
+data/goes_1deg.npz
+fig/v2/
