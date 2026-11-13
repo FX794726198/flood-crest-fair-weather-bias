@@ -16,7 +16,7 @@ H = 98; fig = figure(H); T1, H1 = 3.5, 35; T2, H2 = 54, 35
 T = np.ones(len(s), bool)
 
 # ---------------- row 1: shared y axis
-L1 = [12, 51, 90, 129]; W1 = 36.5
+W1 = (167 - 12 - 3 * 2.5) / 4; L1 = [12 + i * (W1 + 2.5) for i in range(4)]
 ax = [ax_mm(fig, l, T1, W1, H1) for l in L1]
 for sea in ['DJF', 'MAM', 'JJA', 'SON']: line(ax[0], s.sea == sea, SEAS[sea], SEASN[sea])
 base(ax[0]); ax[0].legend(loc='lower right', fontsize=6.1, ncol=2, columnspacing=0.6, handlelength=1.1, bbox_to_anchor=(1.04, -0.03))
@@ -31,7 +31,7 @@ ax[0].set_ylabel('Crest-day clear sky / normal'); ax[0].set_yticks([0.4, 0.6, 0.
 for a in ax[1:]: a.set_yticks([0.4, 0.6, 0.8, 1.0]); a.set_yticklabels([])
 
 # ---------------- row 2
-L2 = [12, 55, 98, 140]; W2 = [31, 31, 30, 27]
+W2 = [(167 - 12 - 3 * 12) / 4] * 4; L2 = [12 + i * (W2[0] + 12) for i in range(4)]
 e, f, g, h = [ax_mm(fig, l, T2, w, H2) for l, w in zip(L2, W2)]
 O = range(0, 11); B = np.stack([s[f'b{o}'].values for o in O], 1); Q = np.stack([s[f'q{o}'].values for o in O], 1)
 for th, col in [(0.3, '#FDAE61'), (0.5, '#D7191C'), (0.7, '#A50F15'), (0.9, '#4D0008')]:
@@ -54,7 +54,7 @@ for gsel, col, nm in [(True, '#2166AC', 'GOES-16 clear'), (False, GREY, 'GOES-16
 agree = ((S2.goes_t >= 0.5) == (S2.clr1 >= 0.5)).mean()
 area_axis(g); g.set_ylim(0, 1.0); g.set_yticks([0, 0.25, 0.5, 0.75, 1]); g.set_ylabel('Sentinel-2 view cloud-free')
 g.legend(loc='center right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, 0.52))
-stat(g, f'Agreement {agree*100:.0f}%', 0.97, 0.06, ha='right', va='bottom', fs=6.1, color=INK2)
+print('agreement', round(agree * 100, 1))
 
 # h: usable Sentinel-2 scenes within one day of the crest and later
 for early, col, nm in [(True, OBS, 'Crest day or next'), (False, GREY, 'Later')]:
@@ -63,6 +63,5 @@ for early, col, nm in [(True, OBS, 'Crest day or next'), (False, GREY, 'Later')]
 area_axis(h); h.set_ylim(0, 0.62); h.set_yticks([0, 0.2, 0.4, 0.6]); h.set_ylabel('Cloud-free Sentinel-2 scenes')
 h.legend(loc='lower right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, -0.03))
 
-for l_, x_, t_ in [('a', 1, 1.5), ('b', 47.5, 1.5), ('c', 86.5, 1.5), ('d', 125.5, 1.5),
-                   ('e', 1, T2 - 3), ('f', 44, T2 - 3), ('g', 87, T2 - 3), ('h', 129, T2 - 3)]: letter(fig, l_, x_, t_)
+for l_, x_, t_ in [('a', 1, 1.5)] + [(n_, L1[i] - 3.5, 1.5) for i, n_ in [(1, 'b'), (2, 'c'), (3, 'd')]] + [(n_, L2[i] - 11, T2 - 3) for i, n_ in enumerate('efgh')]: letter(fig, l_, x_, t_)
 save(fig, 'Fig06_robustness')

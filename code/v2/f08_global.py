@@ -48,8 +48,7 @@ c.plot(JP, CU['all'], '-', color=INK, lw=2.0); ref(c); c.axhline(0.75, color=INK
 c.set_xlim(-2, 7); c.set_xticks([-2, 0, 2, 4, 6]); c.set_ylim(0, 1.3); c.set_yticks([0, 0.5, 1.0])
 c.set_xlabel('Days after storm day'); c.set_ylabel('Clear sky / normal'); c.text(0, 1.28, 'Storm', ha='center', va='top', fontsize=FSS, color=INK2)
 tt = {k: t75(CU[k].values) for k in DS}
-stat(c, '$t_{75}$ (days)\n' + '\n'.join(f'{REGN[k].split()[-1] if k!="namerica" else "N. America"} {tt[k]:.1f}' for k in sorted(DS, key=lambda k: tt[k])),
-     0.98, 0.03, ha='right', va='bottom', fs=5.6, linespacing=1.0)
+print('t75', {k: round(v, 2) for k, v in tt.items()})
 
 # ---------------- d: rain and no-rain crests; MODIS against GOES-16 on the same USGS crests
 d = ax_mm(fig, 55, T2, 31, H2)
@@ -67,7 +66,8 @@ for ds in DS:
     q = G[G.dataset == ds]; e.scatter(q.pred, q.obs, s=5 + q.n / 30, color=REG[ds], edgecolor=INK, lw=0.25, alpha=0.9, zorder=3)
 r = np.corrcoef(G.obs, G.pred)[0, 1]; rm = np.sqrt(((G.obs - G.pred) ** 2).mean()); xb = X1.set_index('scheme')
 e.plot([0, 1.3], [0, 1.3], color=GREY, lw=0.7, ls=(0, (3, 2)), zorder=1); e.set_xlim(0, 1.05); e.set_ylim(0, 1.05); e.set_xticks([0, 0.5, 1]); e.set_yticks([0, 0.5, 1])
-stat(e, f'r = {r:.2f} ({xb.loc[["2.5° blocks","storms","years"],"r"].min():.2f}–{xb.loc[["2.5° blocks","storms","years"],"r"].max():.2f})\nRMSE {rm:.2f}, {len(G)} groups\nNull r = {xb.r_null.mean():.2f}', 0.03, 0.99, fs=6.0, linespacing=1.05)
+stat(e, f'r = {r:.2f}, RMSE {rm:.2f}', 0.03, 0.99, fs=6.0)
+print('8e', round(r, 3), round(rm, 3), len(G), xb.loc[['2.5° blocks', 'storms', 'years'], 'r'].round(3).tolist(), round(xb.r_null.mean(), 3))
 e.set_xlabel('Predicted'); e.set_ylabel('Observed clear sky / normal')
 
 # ---------------- f: lag within each area class

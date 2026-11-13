@@ -35,8 +35,7 @@ for i, k in enumerate(LABK):
 b.set_xlim(-0.25, 4.3); b.set_xticks(range(5)); b.set_xticklabels(['0', '1', '2', '3', '≥4']); b.set_ylim(0, 1.02); b.set_yticks([0, 0.25, 0.5, 0.75, 1])
 b.set_xlabel('Days from crest to first clear look, τ'); b.set_ylabel('Weight of the image, w')
 b.axhline(0.5, color=GREY_L, lw=0.5, ls=(0, (2, 2)), zorder=1)
-b.text(0.03, 0.012, f'w = 1 / [1 + ((τ + 1) / T$_w$)$^{{{kexp:.2f}}}$]\nT$_w$ = {Tco:.2f} A$^{{{Aexp:.2f}}}$ days', transform=b.transAxes, ha='left', va='bottom', fontsize=5.6,
-       color=INK, linespacing=1.2)
+print('9b law', round(kexp, 3), round(Tco, 3), round(Aexp, 3))
 
 # ---------------- c: share within +-25% by area class for the first look, the two branches and the correction
 c = ax_mm(fig, 117, T1, 50, H1)

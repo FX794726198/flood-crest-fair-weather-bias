@@ -27,9 +27,9 @@ a = ax_mm(fig, 9, 4, 101, 55.5)
 basemap(a, (-125, -66.5, 24.5, 49.8), states=True); a.set_aspect(1 / np.cos(np.deg2rad(38)), adjustable='box')
 p = M.groupby('site_no').agg(lat=('lat', 'first'), lon=('lon', 'first'), L=('L', 'mean'), A=('drain_area_km2', 'first')).sort_values('L')
 cm = ListedColormap(plt.get_cmap('viridis_r')(np.linspace(0.05, 0.95, 6))); nb = BoundaryNorm([0, 0.5, 1, 1.5, 2, 2.5, 3], 6)
-sc = a.scatter(p.lon, p.lat, c=p.L.clip(0, 2.999), s=1.5 + 1.6 * np.log10(p.A.clip(1)), cmap=cm, norm=nb, lw=0.15, edgecolors='#404040', rasterized=True, zorder=3)
+sc = a.scatter(p.lon, p.lat, c=p.L.clip(0, 2.999), s=4.6, cmap=cm, norm=nb, lw=0.15, edgecolors='#404040', rasterized=True, zorder=3)
 geo_ticks(a, [-120, -110, -100, -90, -80, -70], [30, 35, 40, 45]); north(a, 0.935, 0.42); scalebar(a, -123.5, 26.3, 500, lat_ref=30)
-a.axvline(-100, color=INK2, lw=0.7, ls=(0, (4, 2)), zorder=2); a.text(-99.6, 49.5, '100°W', fontsize=FSS, color=INK2, va='top', path_effects=HALO, zorder=6)
+a.axvline(-100, color=INK2, lw=0.7, ls=(0, (4, 2)), zorder=2)
 cb = cbar(fig, 91, 49.5, 16, 1.6, sc, ticks=[0, 1, 2, 3], fs=6.2); cb.ax.set_xticklabels(['0', '1', '2', '≥3'])
 fig.text(99 / W, 1 - 47.6 / H, 'Mean crest lag after\nstorm day (days)', ha='center', va='bottom', fontsize=6.2, linespacing=0.95)
 
@@ -65,7 +65,8 @@ for rg, mk, ls, col in [('E', 'o', '-', EAST), ('W', '^', '--', WEST)]:
     q = R[R.reg == rg]; d.fill_between(q.A, q.Ll, q.Lh, color=GREY, alpha=0.2, lw=0); d.plot(q.A, q.Lmean, ls, color=INK, lw=1.0)
     for x, y, k in zip(q.A, q.Lmean, q.b): d.plot(x, y, mk, color=ACOL[LABK.index(k)], mec=INK, mew=0.35, ms=3.6, zorder=5)
 d.text(8, 1.14 + 0.07, 'Clearing (E)', fontsize=FSS, color=EAST, va='bottom'); d.text(8, 2.02 + 0.07, 'Clearing (W)', fontsize=FSS, color=WEST, va='bottom')
-d.text(3.6e4, 0.12, 'Crest lag', fontsize=FSS, color=INK, ha='right')
+d.legend([Line2D([], [], color=INK, ls='-', lw=1.0, marker='o', ms=3.4, mfc='white', mec=INK, mew=0.5), Line2D([], [], color=INK, ls='--', lw=1.0, marker='^', ms=3.4, mfc='white', mec=INK, mew=0.5)], ['East', 'West'],
+         title='Crest lag', title_fontsize=6.1, loc='lower right', fontsize=6.1, handlelength=2.2, borderaxespad=0.1, bbox_to_anchor=(1.03, -0.02))
 area_axis(d, lim=(7, 4e4)); d.set_ylim(0, 3.0); d.set_yticks([0, 1, 2, 3]); d.set_ylabel('Days after storm day')
 
 # ---------------- e: cross-fitted prediction
@@ -76,7 +77,8 @@ for i, k in enumerate(LABK):
 e.plot([0, 1.8], [0, 1.8], color=GREY, lw=0.7, ls=(0, (3, 2)), zorder=1); e.set_xlim(0, 1.65); e.set_ylim(0, 1.65); e.set_xticks([0, 0.5, 1, 1.5]); e.set_yticks([0, 0.5, 1, 1.5])
 r = np.corrcoef(G.obs, G.pred)[0, 1]; rm = np.sqrt(((G.obs - G.pred) ** 2).mean())
 xb = X.set_index('scheme')
-stat(e, f'r = {r:.2f} ({xb.loc[["2.5° blocks","storms","years"],"r_lag"].min():.2f}–{xb.loc[["2.5° blocks","storms","years"],"r_lag"].max():.2f})\nRMSE {rm:.2f}, {len(G)} groups\nNull r = {xb.loc["site halves", "r_null"]:.2f}', 0.03, 0.99, fs=6.0, linespacing=1.05)
+stat(e, f'r = {r:.2f}, RMSE {rm:.2f}', 0.03, 0.99, fs=6.0)
+print('7e', round(r, 3), round(rm, 3), len(G), xb.loc[['2.5° blocks', 'storms', 'years'], 'r_lag'].round(3).tolist(), round(xb.loc['site halves', 'r_null'], 3))
 e.legend([Line2D([], [], ls='', marker='o', ms=3.4, mfc='white', mec=INK, mew=0.6), Line2D([], [], ls='', marker='^', ms=3.4, mfc='white', mec=INK, mew=0.6)], ['East', 'West'],
          loc='lower right', fontsize=6.1, handletextpad=0.1, borderaxespad=0.1, bbox_to_anchor=(1.03, -0.02))
 e.set_xlabel('Predicted'); e.set_ylabel('Observed clear sky / normal')

@@ -84,7 +84,7 @@ e.set_xlim(0, 1); e.set_xticks([0, 0.5, 1]); e.set_xticklabels(['0', '50%', '100
 e.set_xlabel('Residents seen'); spines(e, ('bottom',))
 
 # ---------------- f: single crests within +-25% of the crest-footprint residents
-f = ax_mm(fig, 126, T2, 41, H2)
+f = ax_mm(fig, 124, T2, 43, H2)
 x = EX[EX.P_crest > 10]
 for col, nm, k_, mk in [(FIRST, 'First clear look', 'P_first', 'o'), (TW, 'TWCC', 'P_tw', 'o')]:
     yv = [(np.abs(x[x.ab == k][k_] / x[x.ab == k].P_crest - 1) <= 0.25).mean() for k in LABK]
@@ -95,6 +95,6 @@ f.plot(XC, [(v < 0.75).mean() for v in r_], '--', color=TW, lw=0.8, label='TWCC,
 area_axis(f); f.set_ylim(0, 1.2); f.set_yticks([0, 0.5, 1.0]); f.set_ylabel('Crests within ±25%')
 f.legend(loc='upper center', fontsize=5.6, handlelength=1.2, bbox_to_anchor=(0.5, 1.05), labelspacing=0.12, ncol=2, columnspacing=0.5, handletextpad=0.3)
 
-for l_, x_, t_ in [('a', 1, 2), ('b', 113, 2), ('c', 113, 43.3), ('d', 1, T2 - 3), ('e', 58, T2 - 3), ('f', 115, T2 - 3)]: letter(fig, l_, x_, t_)
+for l_, x_, t_ in [('a', 1, 2), ('b', 113, 2), ('c', 113, 43.3), ('d', 1, T2 - 3), ('e', 58, T2 - 3), ('f', 113, T2 - 3)]: letter(fig, l_, x_, t_)
 save(fig, 'Fig10_exposure')
 print('global', round(share(G), 3), round(G.P_crest.sum() / 1e6, 1), 'gauges', G.basin_id.nunique(), 'US', round(share(EX), 3), round(share(EX, 'P_tw'), 3))

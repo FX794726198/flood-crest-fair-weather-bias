@@ -7,15 +7,14 @@ T1, H1 = 4, 39; T2, H2 = 60, 38
 
 # ---------------- a: captured crest extent under four cloud cases
 a = ax_mm(fig, 13, T1, 68, H1)
-cases = [('ext_cloudfree_max', 'No cloud', '#9CB3C9', 'o'), ('ext_clim_expected', 'Monthly-normal cloud, independent', '#5B7FA6', 's'),
-         ('ext_null', 'Cloud of same dates, other years', '#2F4B6E', 'D'), ('ext_observed_max', 'Cloud that occurred', OBS, 'o')]
+cases = [('ext_cloudfree_max', 'No cloud', '#9CB3C9', 'o'), ('ext_clim_expected', 'Climatological cloud', '#5B7FA6', 's'),
+         ('ext_null', 'Same-dates cloud', '#2F4B6E', 'D'), ('ext_observed_max', 'Observed cloud', OBS, 'o')]
 med = {c: np.array([M[M.ab == k][c].median() for k in LABK]) for c, *_ in cases}
-a.fill_between(XC, med['ext_observed_max'], med['ext_null'], where=med['ext_null'] > med['ext_observed_max'], color=OBS, alpha=0.12, lw=0)
+a.fill_between(XC, med['ext_observed_max'], med['ext_null'], where=med['ext_null'] > med['ext_observed_max'], color=OBS, alpha=0.12, lw=0, label='Lost to storm cloud')
 for c, nm, col, mk in cases:
     a.plot(XC, med[c], '-', color=col, lw=1.3, label=nm, zorder=3); a.plot(XC, med[c], mk, color=col, ms=3.2 if mk != 'D' else 2.8, mec='white', mew=0.4, zorder=4)
-a.text(np.sqrt(XC[1] * XC[2]), 0.355, 'storm\nalignment', ha='center', va='center', fontsize=FSS, color=OBS, linespacing=0.9)
 area_axis(a); a.set_ylim(0, 1.04); a.set_yticks([0, 0.25, 0.5, 0.75, 1]); a.set_ylabel('Crest extent captured (median)')
-a.legend(loc='lower right', fontsize=6.2, bbox_to_anchor=(1.03, -0.02))
+hh, ll = a.get_legend_handles_labels(); a.legend(hh[1:] + hh[:1], ll[1:] + ll[:1], loc='lower right', fontsize=6.2, bbox_to_anchor=(1.03, -0.02))
 
 # ---------------- b: wait from crest to first clear overpass
 b = ax_mm(fig, 99, T1, 68, H1)

@@ -26,7 +26,7 @@ a.set_xscale('log'); a.set_yscale('log'); a.set_xlim(1, 4e5); a.set_ylim(0.3, 15
 a.set_xticks([1, 10, 100, 1e3, 1e4, 1e5]); a.set_xticklabels(['1', '10', '10$^2$', '10$^3$', '10$^4$', '10$^5$']); a.xaxis.set_minor_locator(NullLocator())
 a.set_yticks([1, 10, 100, 1000]); a.set_yticklabels(['1', '10', '100', '1,000']); a.yaxis.set_minor_locator(NullLocator())
 a.set_xlabel('Drainage area (km$^2$)'); a.set_ylabel('Crest duration (h)')
-stat(a, f'Slope {lr.slope:.2f}, r = {lr.rvalue:.2f}', 0.98, 0.03, ha='right', va='bottom', fs=6.2)
+print('11a slope, r', round(lr.slope, 3), round(lr.rvalue, 3))
 
 # ---------------- b: captured extent against revisit, with the revisit that gives 80%
 b = ax_mm(fig, 69, T1, 41, H1)
@@ -52,7 +52,6 @@ c.axvline(1, color=GREY, lw=0.5, ls=':'); c.set_xscale('log'); c.set_xlim(10 ** 
 c.set_xticks([0.01, 0.1, 1, 10, 100]); c.set_xticklabels(['0.01', '0.1', '1', '10', '100']); c.set_yticks([0, 0.25, 0.5, 0.75, 1])
 c.set_xlabel('Crest duration / revisit interval'); c.set_ylabel('Crest extent captured')
 c.legend(loc='upper left', fontsize=6.0, handlelength=1.6, bbox_to_anchor=(-0.02, 1.04))
-stat(c, 'Held-out R$^2$ 0.95,\nby area 0.73', 0.98, 0.03, ha='right', va='bottom', fs=6.0, linespacing=1.05)
 
 # ---------------- d: schemes x area class, with crest-footprint residents
 order = [('Landsat 8/9 (8 d)', 'Landsat 8/9, 8 d'), ('Sentinel-2 (5 d)', 'Sentinel-2, 5 d'), ('HLS (S2 + Landsat)', 'Landsat + Sentinel-2'), ('MODIS Terra+Aqua', 'MODIS Terra + Aqua'),
@@ -60,7 +59,7 @@ order = [('Landsat 8/9 (8 d)', 'Landsat 8/9, 8 d'), ('Sentinel-2 (5 d)', 'Sentin
          ('Daily SAR', 'Radar, daily'), ('MODIS, no cloud', 'MODIS, no cloud')]
 P = S.dropna(subset=['pc'])
 M = np.array([[S[(S.scheme == k) & (S.ab == b_)].ext.mean() for b_ in LABK] + [PCI.people[k]] for k, _ in order])
-dd = ax_mm(fig, 37, T2, 66, H2)
+dd = ax_mm(fig, 37, T2, 63, H2)
 im = dd.imshow(M, cmap='YlGnBu', vmin=0, vmax=1, aspect='auto')
 for i in range(M.shape[0]):
     for j in range(M.shape[1]): dd.text(j, i, f'{M[i, j] * 100:.0f}', ha='center', va='center', fontsize=6.0, color='white' if M[i, j] > 0.55 else INK)
@@ -75,11 +74,11 @@ xl = min(l.get_window_extent(rd).x0 for l in dd.get_yticklabels()); xl = dd.tran
 for y0, y1, t_ in [(-0.4, 3.4, 'Optical'), (3.6, 6.4, 'Radar'), (6.6, 7.4, ''), (7.6, 9.4, 'Possible')]:
     dd.plot([xl, xl], [y0, y1], '-', color=INK2, lw=0.8, transform=dd.get_yaxis_transform(), clip_on=False)
     if t_: dd.text(xl - 0.015, (y0 + y1) / 2, t_, transform=dd.get_yaxis_transform(), rotation=90, ha='right', va='center', fontsize=6.2, color=INK2)
-cb = cbar(fig, 107, T2 + 4, 1.8, H2 - 8, im, orient='vertical', ticks=[0, 0.5, 1], fs=6.0); cb.ax.set_yticklabels(['0', '50%', '100%'])
-fig.text(108.5 / W, 1 - (T2 + 2.6) / H, 'Captured', ha='center', va='bottom', fontsize=6.0)
+cb = cbar(fig, 104, T2 + 4, 1.8, H2 - 8, im, orient='vertical', ticks=[0, 0.5, 1], fs=6.0); cb.ax.set_yticklabels(['0', '50%', '100%'])
+fig.text(105.5 / W, 1 - (T2 + 2.6) / H, 'Captured', ha='center', va='bottom', fontsize=6.0)
 
 # ---------------- e: residents captured against revisit; missions at their nominal revisit
-e = ax_mm(fig, 129, T2, 38, H2)
+e = ax_mm(fig, 126, T2, 41, H2)
 Wq = Wp.dropna(subset=['pc']); cur = Wq.groupby('rv').apply(lambda q: q['pop'].sum() / q.pc.sum())
 e.plot(cur.index, cur.values, '-', color=INK, lw=1.8, label='No cloud', zorder=3)
 nom = {'MODIS Terra+Aqua': 12, 'MODIS, no cloud': 12, 'Landsat 8/9 (8 d)': 192, 'Sentinel-2 (5 d)': 120, 'HLS (S2 + Landsat)': 24 / (1 / 5 + 1 / 8), 'Sentinel-1 (12 d)': 288,
@@ -102,6 +101,6 @@ e.set_xscale('log'); e.set_xticks([1, 6, 24, 72, 288]); e.set_xticklabels(['1 h'
 e.set_xlim(0.9, 450); e.set_ylim(0, 1.03); e.set_yticks([0, 0.25, 0.5, 0.75, 1]); e.set_xlabel('Revisit interval'); e.set_ylabel('Residents captured / at crest')
 e.legend(loc='upper right', fontsize=6.0, handlelength=1.6, bbox_to_anchor=(1.03, 1.04))
 
-for l_, x_, t_ in [('a', 1, T1 - 2), ('b', 58, T1 - 2), ('c', 115, T1 - 2), ('d', 1, T2 - 3), ('e', 118, T2 - 3)]: letter(fig, l_, x_, t_)
+for l_, x_, t_ in [('a', 1, T1 - 2), ('b', 58, T1 - 2), ('c', 115, T1 - 2), ('d', 1, T2 - 3), ('e', 115, T2 - 3)]: letter(fig, l_, x_, t_)
 save(fig, 'Fig11_osse')
 print('slope', round(lr.slope, 3), 'r', round(lr.rvalue, 3), 'MODIS equiv d', round(xe / 24, 2))
