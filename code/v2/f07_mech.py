@@ -81,6 +81,9 @@ stat(e, f'r = {r:.2f}, RMSE {rm:.2f}', 0.03, 0.99, fs=6.0)
 print('7e', round(r, 3), round(rm, 3), len(G), xb.loc[['2.5° blocks', 'storms', 'years'], 'r_lag'].round(3).tolist(), round(xb.loc['site halves', 'r_null'], 3))
 e.legend([Line2D([], [], ls='', marker='o', ms=3.4, mfc='white', mec=INK, mew=0.6), Line2D([], [], ls='', marker='^', ms=3.4, mfc='white', mec=INK, mew=0.6)], ['East', 'West'],
          loc='lower right', fontsize=6.1, handletextpad=0.1, borderaxespad=0.1, bbox_to_anchor=(1.03, -0.02))
+e.add_artist(e.get_legend())
+e.legend([e.scatter([], [], s=6 + n_ / 18, marker='o', color='white', edgecolor=INK, lw=0.5) for n_ in (50, 200, 500)], ['50', '200', '500'], title='Crests', title_fontsize=6.1,
+         loc='upper left', fontsize=6.1, handletextpad=0.3, labelspacing=0.3, borderaxespad=0.1, bbox_to_anchor=(-0.01, 0.91))
 e.set_xlabel('Predicted'); e.set_ylabel('Observed clear sky / normal')
 
 # ---------------- f: lag within each area class

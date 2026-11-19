@@ -68,6 +68,8 @@ r = np.corrcoef(G.obs, G.pred)[0, 1]; rm = np.sqrt(((G.obs - G.pred) ** 2).mean(
 e.plot([0, 1.3], [0, 1.3], color=GREY, lw=0.7, ls=(0, (3, 2)), zorder=1); e.set_xlim(0, 1.05); e.set_ylim(0, 1.05); e.set_xticks([0, 0.5, 1]); e.set_yticks([0, 0.5, 1])
 stat(e, f'r = {r:.2f}, RMSE {rm:.2f}', 0.03, 0.99, fs=6.0)
 print('8e', round(r, 3), round(rm, 3), len(G), xb.loc[['2.5° blocks', 'storms', 'years'], 'r'].round(3).tolist(), round(xb.r_null.mean(), 3))
+e.legend([e.scatter([], [], s=5 + n_ / 30, color='white', edgecolor=INK, lw=0.5) for n_ in (100, 500, 2000)], ['100', '500', '2,000'], title='Crests', title_fontsize=6.1,
+         loc='lower right', fontsize=6.1, handletextpad=0.3, labelspacing=0.45, borderaxespad=0.1, bbox_to_anchor=(1.03, -0.02))
 e.set_xlabel('Predicted'); e.set_ylabel('Observed clear sky / normal')
 
 # ---------------- f: lag within each area class

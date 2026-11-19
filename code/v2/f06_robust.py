@@ -47,21 +47,21 @@ f.legend(loc='upper left', fontsize=6.1, handlelength=1.1, title='Rain (MRMS)', 
 # g: Sentinel-2 scene classification against the GOES-16 clear fraction (same day, Terra time)
 S2 = pd.read_parquet('data/s2/s2_scl.parquet'); S2 = S2[(S2.day >= 0) & (S2.cov1 >= 0.9) & S2.goes_t.notna()].copy()
 S2['abk'] = S2.ab.astype(str)
-for gsel, col, nm in [(True, '#2166AC', 'GOES-16 clear'), (False, GREY, 'GOES-16 cloudy')]:
+for gsel, col, nm in [(True, '#2166AC', 'Clear'), (False, GREY, 'Cloudy')]:
     sel = (S2.goes_t >= 0.5) if gsel else (S2.goes_t < 0.5)
     y = [(S2[sel & (S2.abk == k)].clr1 >= 0.5).mean() for k in LABK]
     g.plot(XC, y, '-', color=col, lw=1.25, label=nm, zorder=3); g.plot(XC, y, 'o', color=col, ms=2.8, mec='white', mew=0.35, zorder=4)
 agree = ((S2.goes_t >= 0.5) == (S2.clr1 >= 0.5)).mean()
-area_axis(g); g.set_ylim(0, 1.0); g.set_yticks([0, 0.25, 0.5, 0.75, 1]); g.set_ylabel('Sentinel-2 view cloud-free')
-g.legend(loc='center right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, 0.52))
+area_axis(g); g.set_ylim(0, 1.0); g.set_yticks([0, 0.25, 0.5, 0.75, 1]); g.set_ylabel('Sentinel-2 scenes cloud-free')
+g.legend(loc='center right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, 0.52), title='GOES-16 at Terra overpass', title_fontsize=6.1)
 print('agreement', round(agree * 100, 1))
 
 # h: usable Sentinel-2 scenes within one day of the crest and later
-for early, col, nm in [(True, OBS, 'Crest day or next'), (False, GREY, 'Later')]:
+for early, col, nm in [(True, OBS, 'Crest day or day after'), (False, GREY, '2–10 days after crest')]:
     y = [((S2.abk == k) & (S2.day <= 1 if early else S2.day >= 2) & (S2.clr1 >= 0.5)).sum() / ((S2.abk == k) & (S2.day <= 1 if early else S2.day >= 2)).sum() for k in LABK]
     h.plot(XC, y, '-', color=col, lw=1.25, label=nm, zorder=3); h.plot(XC, y, 'o', color=col, ms=2.8, mec='white', mew=0.35, zorder=4)
-area_axis(h); h.set_ylim(0, 0.62); h.set_yticks([0, 0.2, 0.4, 0.6]); h.set_ylabel('Cloud-free Sentinel-2 scenes')
-h.legend(loc='lower right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, -0.03))
+area_axis(h); h.set_ylim(0, 0.62); h.set_yticks([0, 0.2, 0.4, 0.6]); h.set_ylabel('Sentinel-2 scenes cloud-free')
+h.legend(loc='lower right', fontsize=6.1, handlelength=1.1, bbox_to_anchor=(1.05, -0.03), title='Scene date', title_fontsize=6.1)
 
 for l_, x_, t_ in [('a', 1, 1.5)] + [(n_, L1[i] - 3.5, 1.5) for i, n_ in [(1, 'b'), (2, 'c'), (3, 'd')]] + [(n_, L2[i] - 11, T2 - 3) for i, n_ in enumerate('efgh')]: letter(fig, l_, x_, t_)
 save(fig, 'Fig06_robustness')
